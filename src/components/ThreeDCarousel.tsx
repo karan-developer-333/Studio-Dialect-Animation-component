@@ -31,13 +31,24 @@ const IMAGES = [
   "https://picsum.photos/seed/art19/800/1200",
   "https://picsum.photos/seed/art20/800/1200",
   "https://picsum.photos/seed/art21/800/1200",
-  "https://picsum.photos/seed/art22/800/1200",
-  "https://picsum.photos/seed/art23/800/1200",
-  "https://picsum.photos/seed/art24/800/1200",
-  "https://picsum.photos/seed/art25/800/1200",
-  "https://picsum.photos/seed/art26/800/1200",
-  "https://picsum.photos/seed/art27/800/1200",
-  "https://picsum.photos/seed/art28/800/1200",
+  "https://picsum.photos/seed/art10/800/1200",
+  "https://picsum.photos/seed/art11/800/1200",
+  "https://picsum.photos/seed/art12/800/1200",
+  "https://picsum.photos/seed/art13/800/1200",
+  "https://picsum.photos/seed/art14/800/1200",
+  "https://picsum.photos/seed/art15/800/1200",
+  "https://picsum.photos/seed/art16/800/1200",
+  "https://picsum.photos/seed/art17/800/1200",
+  "https://picsum.photos/seed/art18/800/1200",
+  "https://picsum.photos/seed/art19/800/1200",
+  "https://picsum.photos/seed/art20/800/1200",
+  "https://picsum.photos/seed/art21/800/1200",
+  "https://picsum.photos/seed/art10/800/1200",
+  "https://picsum.photos/seed/art11/800/1200",
+  "https://picsum.photos/seed/art12/800/1200",
+  "https://picsum.photos/seed/art13/800/1200",
+  "https://picsum.photos/seed/art14/800/1200",
+  "https://picsum.photos/seed/art15/800/1200",
 ];
 
 export default function ThreeDCarousel() {
@@ -46,9 +57,9 @@ export default function ThreeDCarousel() {
   React.useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setRadius(280);
+        setRadius(360); // mobile में थोड़ा कम, लेकिन spiral wide रखना
       } else {
-        setRadius(386);
+        setRadius(510); // desktop पर spiral को wide करने के लिए बड़ा radius
       }
     };
     handleResize();
@@ -97,7 +108,7 @@ export default function ThreeDCarousel() {
 
   const smoothTilt = useSpring(tilt, {
     stiffness: 50,
-    damping: 30,
+    damping: 20,
   });
 
   const smoothRadius = useSpring(radius, {
@@ -135,7 +146,7 @@ export default function ThreeDCarousel() {
   // Spiral (Helix) distribution logic
   const items = React.useMemo(() => {
     const total = IMAGES.length;
-    const spiralHeight = 1800; // Refined for perfect vertical gap
+    const spiralHeight = 1500; // Refined for perfect vertical gap
     const rotations = 3; // 3 full rotations
     
     return IMAGES.map((src, index) => {
@@ -159,7 +170,7 @@ export default function ThreeDCarousel() {
 
   return (
     <motion.div 
-      className="fixed inset-0 w-full h-screen flex items-center justify-center overflow-hidden bg-black cursor-grab active:cursor-grabbing"
+      className="fixed  w-full h-screen flex items-center justify-center overflow-hidden bg-black cursor-grab active:cursor-grabbing"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -167,11 +178,11 @@ export default function ThreeDCarousel() {
       whileTap={{ cursor: "grabbing" }}
     >
       {/* Dynamic Vignette */}
-      <div className="absolute inset-0 pointer-events-none z-50 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]" />
+      <div className="absolute  pointer-events-none z-50 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]" />
 
       {/* Background Typography with Parallax */}
       <motion.div 
-        className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none overflow-hidden opacity-[0.04]"
+        className="absolute  flex flex-col items-center justify-center pointer-events-none select-none overflow-hidden opacity-[0.04]"
         style={{ x: bgParallaxX, y: bgParallaxY }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 opacity-20">
@@ -221,12 +232,12 @@ export default function ThreeDCarousel() {
             return (
               <motion.div
                 key={index}
-                className="absolute w-[180px] h-[280px] md:w-[260px] md:h-[380px] overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.6)] border border-white/5 bg-neutral-900"
+                className="absolute w-[180px] h-[280px] md:w-[260px] md:h-[380px] overflow-hidden "
                 style={{
                   transformStyle: "preserve-3d",
                   backfaceVisibility: "hidden",
                   WebkitBackfaceVisibility: "hidden",
-                  filter: `drop-shadow(0 0 20px rgba(255,255,255,${(normalizedRotation - 0.5) * 0.1})) blur(${depthBlur}px)`,
+                  // filter: `drop-shadow(0 0 20px rgba(255,255,255,${(normalizedRotation - 0.5) * 0.1})) blur(${depthBlur}px)`,
                 }}
                 initial={{ opacity: 0, scale: 0.5, y: 500 }}
                 animate={{
@@ -237,6 +248,7 @@ export default function ThreeDCarousel() {
                 whileHover={{ 
                   scale: 1.05, 
                   zIndex: 100,
+                  transform: `translateY(${item.yOffset}px) rotateY(${item.ry}deg) rotateX(${item.rx}deg) translateZ(${radius + 80}px)`,
                 }}
                 transition={{ 
                   type: "spring", 
@@ -252,14 +264,14 @@ export default function ThreeDCarousel() {
                   className="w-full h-full object-cover transition-all duration-700 ease-out"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+                <div className="absolute  opacity-0 hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
                   <span className="text-white/40 text-[10px] uppercase tracking-[0.3em] mb-1">Case Study</span>
                   <p className="text-white font-bold tracking-tight uppercase text-lg leading-none">Project {index + 1}</p>
                 </div>
 
                 {/* Dynamic Glare/Lighting */}
                 <div 
-                  className="absolute inset-0 pointer-events-none transition-opacity duration-500"
+                  className="absolute  pointer-events-none transition-opacity duration-500"
                   style={{
                     background: `linear-gradient(${itemRotation}deg, rgba(255,255,255,${(1 - normalizedRotation) * 0.1}) 0%, transparent 50%, rgba(0,0,0,${(1 - normalizedRotation) * 0.3}) 100%)`,
                     opacity: 0.5 + normalizedRotation * 0.5,
@@ -267,7 +279,7 @@ export default function ThreeDCarousel() {
                 />
                 
                 {/* Smooth Edge Overlay */}
-                <div className="absolute inset-0 pointer-events-none border border-white/10 rounded-sm" />
+                <div className="absolute  pointer-events-none border border-white/10 rounded-sm" />
               </motion.div>
             );
           })}
